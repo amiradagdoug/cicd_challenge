@@ -17,7 +17,7 @@ jobs:
         run: docker build -t my-docker-hello-world .
 
       - name: Login to GitHub Packages
-        run: echo ${{ secrets.GITHUB_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        run: echo ${{ secrets.PACKAGES_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
 
       - name: Push Docker Image to GitHub Packages
         run: |
