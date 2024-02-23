@@ -1,0 +1,14 @@
+stages:
+    - build
+  
+  build:
+    image: docker:latest
+    stage: build
+    script:
+      - docker build -t hello-world-app .
+      - docker save -o hello-world-app.tar hello-world-app
+    artifacts:
+      paths:
+        - hello-world-app.tar
+      expire_in: 1 week
+  
