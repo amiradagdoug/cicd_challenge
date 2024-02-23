@@ -1,0 +1,27 @@
+# .github/workflows/ci.yml
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout Code
+        uses: actions/checkout@v2
+
+      - name: Build Docker Image
+        run: docker build -t my-docker-hello-world .
+
+      - name: Push Docker Image to GitHub Packages
+        run: docker tag my-docker-hello-world docker.pkg.github.com/${{ github.repository_owner }}/${{ github.repository_name }}/my-docker-hello-world:latest
+        run: echo ${{ secrets.PACKAGES_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+        run: docker push docker.pkg.github.com/${{ github.repository_owner }}/${{ github.repository_name }}/my-docker-hello-world:latest
+
+      - name: Deploy to Docker
+        run: |
+          docker run -p 5000:5000 -d --name my-hello-world my-docker-hello-world:latest
