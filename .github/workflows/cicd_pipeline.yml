@@ -16,7 +16,7 @@ jobs:
         run: npm install
 
       - name: Build the docker image
-        run: docker build -t nodejs-image_finale .
+        run: docker build -t nodejs-image_finalee .
 
       - name: Log in the dockerhub
         uses: docker/login-action@v1
@@ -26,8 +26,8 @@ jobs:
 
       - name: Push image to Dockerhub
         run: |
-          docker tag nodejs-image_finale ${{ secrets.DOCKER_USERNAME }}/nodejs-image_finale:latest
-          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image_finale:latest
+          docker tag nodejs-image_finalee ${{ secrets.DOCKER_USERNAME }}/nodejs-image_finalee:latest
+          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image_finalee:latest
 
 
   deploy:
@@ -42,9 +42,9 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
           
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_final:latest
-            sudo docker stop nodejs-image_finale || true
-            sudo docker rm nodejs-image_finale || true
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_finalee:latest
+            sudo docker stop nodejs-image_finalee || true
+            sudo docker rm nodejs-image_finalee || true
            
-            sudo docker run -d -p 3008:3000 --name cc nodejs-image_finale ${{ secrets.DOCKER_USERNAME }}/nodejs-image_finale:latest
+            sudo docker run -d -p 3008:3000 --name cc nodejs-image_finalee ${{ secrets.DOCKER_USERNAME }}/nodejs-image_finalee:latest
             sudo docker ps 
