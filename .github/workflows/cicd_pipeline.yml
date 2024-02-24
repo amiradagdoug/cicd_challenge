@@ -4,6 +4,7 @@ on:
   push:
     branches:
       - main
+
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -18,17 +19,41 @@ jobs:
       - name: Build the docker image
         run: docker build -t nodejs-image_ff .
 
-      - name: Log in the dockerhub
+      - name: Log in to Docker Hub
         uses: docker/login-action@v1
         with:
           username: ${{ secrets.DOCKER_USERNAME }}
           password: ${{ secrets.DOCKER_PASSWORD }}
 
-      - name: Push image to Dockerhub
+      - name: Push image to Docker Hub
         run: |
           docker tag nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
           docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
 
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Generate test report
+        run: npm run generate-test-report
+
+      - name: Run Mocha with JUnit Reporter
+        run: npx mocha --reporter mocha-junit-reporter > test-report.xml
+
+      - name: Upload test report
+        uses: actions/upload-artifact@v2
+        with:
+          name: test-report
+          path: test-report.xml
 
   deploy:
     runs-on: ubuntu-latest
@@ -41,9 +66,8 @@ jobs:
           username: ${{ secrets.EC2_USERNAME }}
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
-          
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
             sudo docker stop nodejs-image_ff || true
             sudo docker rm nodejs-image_ff || true
             sudo docker run -d -p 3008:3000 --name=nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
-            sudo docker ps 
+            sudo docker ps
