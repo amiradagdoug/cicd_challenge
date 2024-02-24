@@ -1,4 +1,4 @@
-name: CI
+name: Node.js CI
 
 on:
   push:
@@ -6,20 +6,59 @@ on:
       - main
 
 jobs:
-  build:
+  build-and-push:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout Code
+      - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Build Docker Image
-        run: docker build -t my-docker-hello-world .
+      - name: Install dependencies
+        run: npm install
 
-      - name: Login to GitHub Packages
-        run: echo ${{ secrets.PACKAGES_TOKEN }} | docker login docker.pkg.github.com -u ${{ github.repository_owner }} --password-stdin
+      - name: Build the docker image
+        run: docker build -t nodejs-image .
 
-      - name: Push Docker Image to GitHub Packages
+      - name: Log in the dockerhub
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+
+      - name: Push image to Dockerhub
         run: |
-          docker tag my-docker-hello-world docker.pkg.github.com/${{ github.repository_owner }}${{ github.repository_name }}/my-docker-hello-world/my-docker-hello-world:latest
-          docker push docker.pkg.github.com/${{ github.repository_owner }}${{ github.repository_name }}/my-docker-hello-world/my-docker-hello-world:latest
+          docker tag nodejs-image ${{ secrets.DOCKER_USERNAME }}/nodejs-image:latest
+          docker push ${{ secrets.DOCKER_USERNAME }}/nodejs-iamge:latest
+
+  test:
+     - name: Run tests
+       run: npm test
+
+     - name: Generate test report
+       run: npm run generate-test-report
+
+     - name: Generate test report
+       run: npx mocha --reporter mocha-junit-reporter > test-report.xml
+
+     - name: Upload test report
+       uses: actions/upload-artifact@v2
+       with:
+         name: test-report
+         path: test-report.xml
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build-and-push
+    steps:
+      - name: Deploy to EC2 AWS
+        uses: appleboy/ssh-action@master
+        with:
+          host: ${{ secrets.EC2_HOST }}
+          username: ${{ secrets.EC2_USERNAME }}
+          key: ${{ secrets.EC2_PRIVATE_KEY }}
+          script: |
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image :latest
+            sudo docker stop nodejs-image || true
+            sudo docker rm nodejs-image || true
+            sudo docker run -d -p 3003:3000 --name=nodejs-image ${{ secrets.DOCKER_USERNAME }}/nodejs-image :latest
+            sudo docker ps
