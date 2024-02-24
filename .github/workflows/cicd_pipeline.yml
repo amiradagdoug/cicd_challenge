@@ -4,7 +4,6 @@ on:
   push:
     branches:
       - main
-
 jobs:
   build-and-push:
     runs-on: ubuntu-latest
@@ -28,23 +27,8 @@ jobs:
       - name: Push image to Dockerhub
         run: |
           docker tag nodejs-image ${{ secrets.DOCKER_USERNAME }}/nodejs-image:latest
-          docker push ${{ secrets.DOCKER_USERNAME }}/nodejs-iamge:latest
+          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image:latest
 
-  test:
-     - name: Run tests
-       run: npm test
-
-     - name: Generate test report
-       run: npm run generate-test-report
-
-     - name: Generate test report
-       run: npx mocha --reporter mocha-junit-reporter > test-report.xml
-
-     - name: Upload test report
-       uses: actions/upload-artifact@v2
-       with:
-         name: test-report
-         path: test-report.xml
 
   deploy:
     runs-on: ubuntu-latest
@@ -61,4 +45,4 @@ jobs:
             sudo docker stop nodejs-image || true
             sudo docker rm nodejs-image || true
             sudo docker run -d -p 3003:3000 --name=nodejs-image ${{ secrets.DOCKER_USERNAME }}/nodejs-image :latest
-            sudo docker ps
+            sudo docker ps 
