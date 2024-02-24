@@ -16,7 +16,7 @@ jobs:
         run: npm install
 
       - name: Build the docker image
-        run: docker build -t nodejs-image .
+        run: docker build -t nodejs-image1 .
 
       - name: Log in the dockerhub
         uses: docker/login-action@v1
@@ -26,8 +26,8 @@ jobs:
 
       - name: Push image to Dockerhub
         run: |
-          docker tag nodejs-image ${{ secrets.DOCKER_USERNAME }}/nodejs-image:latest
-          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image:latest
+          docker tag nodejs-image1 ${{ secrets.DOCKER_USERNAME }}/nodejs-image1:latest
+          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image1:latest
 
 
   deploy:
@@ -45,5 +45,5 @@ jobs:
             sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image1:latest
             sudo docker stop nodejs-image1 || true
             sudo docker rm nodejs-image1 || true
-            sudo docker run -d -p 3007:3000 --name=nodejs-image1 ${{ secrets.DOCKER_USERNAME }}/nodejs-image1:latest
+            sudo docker run -d -p 3008:3000 --name=nodejs-image1 ${{ secrets.DOCKER_USERNAME }}/nodejs-image1:latest
             sudo docker ps 
