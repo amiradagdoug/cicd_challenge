@@ -16,7 +16,7 @@ jobs:
         run: npm install
 
       - name: Build the docker image
-        run: docker build -t nodejs-image_f .
+        run: docker build -t nodejs-image_ff .
 
       - name: Log in the dockerhub
         uses: docker/login-action@v1
@@ -26,8 +26,8 @@ jobs:
 
       - name: Push image to Dockerhub
         run: |
-          docker tag nodejs-image_f ${{ secrets.DOCKER_USERNAME }}/nodejs-image_f:latest
-          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image_f:latest
+          docker tag nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
+          docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
 
 
   deploy:
@@ -42,7 +42,7 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
           
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_f:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
      
-            sudo docker run -d -p 3008:3000 --name=nodejs-image_f${{ secrets.DOCKER_USERNAME }}/nodejs-image_f:latest
+            sudo docker run -d -p 3008:3000 --name=nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:latest
             sudo docker ps 
