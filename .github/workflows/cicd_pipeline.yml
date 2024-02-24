@@ -42,8 +42,8 @@ jobs:
           key: ${{ secrets.EC2_PRIVATE_KEY }}
           script: |
           
-            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image:latest
-            sudo docker stop nodejs-image || true
-            sudo docker rm nodejs-image || true
-            sudo docker run -d -p 3003:3000 --name=nodejs-image ${{ secrets.DOCKER_USERNAME }}/nodejs-image:latest
+            sudo docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image1:latest
+            sudo docker stop nodejs-image1 || true
+            sudo docker rm nodejs-image1 || true
+            sudo docker run -d -p 3007:3000 --name=nodejs-image1 ${{ secrets.DOCKER_USERNAME }}/nodejs-image1:latest
             sudo docker ps 
