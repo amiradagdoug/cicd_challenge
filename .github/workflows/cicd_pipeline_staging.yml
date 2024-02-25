@@ -21,8 +21,8 @@ jobs:
 
       - name: Build the docker image
         run: |
-          docker build -t nodejs-image_ff .
-          docker tag nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:${{ github.sha }}
+          docker build -t nodejs-image_cgi .
+          docker tag nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
 
   test:
     runs-on: ubuntu-latest
@@ -62,10 +62,9 @@ jobs:
 
       - name: Deploy to Staging
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:${{ github.sha }}
-          docker stop nodejs-image_ff || true
-          docker rm nodejs-image_ff || true
-          docker run -d -p 3008:3000 --name=nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:${{ github.sha }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
+       
+          docker run -d -p 3008:3000 --name=nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
           docker ps
 
   release:
@@ -81,8 +80,8 @@ jobs:
 
       - name: Deploy to Production
         run: |
-          docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:${{ github.sha }}
-          docker stop nodejs-image_ff || true
-          docker rm nodejs-image_ff || true
-          docker run -d -p 3008:3000 --name=nodejs-image_ff ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:${{ github.sha }}
+          docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
+          docker stop nodejs-image_cgi || true
+          docker rm nodejs-image_cgi || true
+          docker run -d -p 3008:3000 --name=nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
           docker ps
