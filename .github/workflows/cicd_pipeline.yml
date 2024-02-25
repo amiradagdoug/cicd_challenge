@@ -32,28 +32,31 @@ jobs:
 
   test:
     runs-on: ubuntu-latest
-
+  
     steps:
-      - name: Checkout repository
-        uses: actions/checkout@v2
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Generate test report
-        run: npm run generate-test-report
-
-      - name: Run Mocha with JUnit Reporter
-        run: npx mocha --reporter mocha-junit-reporter > test-report.xml
-
-      - name: Upload test report
-        uses: actions/upload-artifact@v2
-        with:
-          name: test-report
-          path: test-report.xml
+        - name: Checkout repository
+          uses: actions/checkout@v2
+        
+        - name: Install dependencies
+          run: npm install
+        
+        - name: Run unit tests
+          run: npm run test:unit
+        
+        - name: Run static code analysis
+          run: npm run lint
+        
+        - name: Run integration tests
+          run: npm run test:integration
+        
+        - name: Generate test report
+          run: npx mocha --reporter mocha-junit-reporter > test-report.xml
+        
+        - name: Upload test report
+          uses: actions/upload-artifact@v2
+          with:
+           name: test-report
+           path: test-report.xml
 
   deploy:
     runs-on: ubuntu-latest
