@@ -31,7 +31,7 @@ jobs:
           docker push ${{secrets.DOCKER_USERNAME }}/nodejs-image_amira:latest
 
   test:
-    runs-on: ubuntu-latest
+    runs-on: ubuntu-latest 
   
     steps:
         - name: Checkout repository
