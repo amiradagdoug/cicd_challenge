@@ -63,7 +63,8 @@ jobs:
       - name: Deploy to Staging
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
-       
+          docker stop nodejs-image_cgi || true
+          docker rm nodejs-image_cgi || true
           docker run -d -p 3008:3000 --name=nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
           docker ps
 
