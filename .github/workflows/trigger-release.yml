@@ -1,0 +1,28 @@
+name: Trigger Release
+
+on:
+  workflow_dispatch:
+    inputs:
+      branch:
+        description: 'Branch name'
+        required: true
+        default: 'staging'
+
+jobs:
+   release:
+
+     runs-on: ubuntu-latest
+     steps:
+         - name: Checkout repository
+           uses: actions/checkout@v2
+
+         - name: Install dependencies
+           run: npm install
+
+         - name: Deploy to Production
+           run: |
+            docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
+            docker stop nodejs-image_cgi || true
+            docker rm nodejs-image_cgi || true
+            docker run -d -p 3001:3000 --name=nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
+            docker ps
