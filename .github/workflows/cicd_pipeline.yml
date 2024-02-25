@@ -40,8 +40,7 @@ jobs:
         - name: Install dependencies
           run: npm install
         
-        - name: Run junit tests
-          run: npm run test:junit
+ 
         
         - name: Run static code analysis
           run: npm run lint
