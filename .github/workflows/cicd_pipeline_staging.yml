@@ -1,4 +1,4 @@
-name: Node.js CI/CD
+name: Node.js CI/CD staging
 
 on:
   push:
@@ -59,7 +59,7 @@ jobs:
 
       - name: Install dependencies
         run: npm install
-        
+
       - name: Deploy to Staging
         run: |
           docker pull ${{ secrets.DOCKER_USERNAME }}/nodejs-image_ff:${{ github.sha }}

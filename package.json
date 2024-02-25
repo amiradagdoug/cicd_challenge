@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "mocha",
-    "test:junit": "jest --coverage",
+    "test:junit": "jest --coverage --reporters=default --reporters=jest-junit",
     "lint": "eslint .",
     "start": "node app.js"
   },

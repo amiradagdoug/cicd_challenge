@@ -9,7 +9,7 @@ COPY package*.json ./
 
 # Install dependencies
 RUN npm install
-
+RUN npm install jest jest-junit --save-dev
 # Copy the rest of the application
 COPY . .
 
