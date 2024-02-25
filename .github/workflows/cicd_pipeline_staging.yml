@@ -72,6 +72,7 @@ jobs:
           docker run -d -p 3001:3000 --name=nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
           docker ps
 
+          
   release:
     runs-on: ubuntu-latest
     needs: build
