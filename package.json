@@ -7,7 +7,8 @@
     "test": "mocha &&  react-scripts test --passWithNoTests",
     "test:junit": "jest --coverage --reporters=default --reporters=jest-junit",
     "lint": "eslint .",
-    "start": "node app.js"
+    "start": "node app.js",
+    "test:integration": "npm run test"
   },
   "author": "",
   "license": "ISC",
