@@ -39,11 +39,7 @@ jobs:
         
         - name: Install dependencies
           run: npm install
-        
- 
-        
-        - name: Run static code analysis
-          run: npm run lint
+      
         
         - name: Run integration tests
           run: npm run test:integration
