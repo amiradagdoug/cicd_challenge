@@ -51,7 +51,7 @@ jobs:
           if: always()
           uses: actions/upload-artifact@v2
           with:
-           name: test-report 
+           name: test-report  
            path: test-report.xml
 
   deploy:
