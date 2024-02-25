@@ -23,6 +23,10 @@ jobs:
         run: |
           docker build -t nodejs-image_cgi .
           docker tag nodejs-image_cgi ${{ secrets.DOCKER_USERNAME }}/nodejs-image_cgi:${{ github.sha }}
+          
+      - name: Print Git Ref
+        run: |
+            echo "Current Git Ref: ${{ github.ref }}"
 
   test:
     runs-on: ubuntu-latest
